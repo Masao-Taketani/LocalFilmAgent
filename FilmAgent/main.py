@@ -1,4 +1,5 @@
-from util import cretae_new_path, read_prompt, prompt_format, log_prompt, clean_text, GPTResponse2JSON
+from util import cretae_new_path, read_prompt, prompt_format, log_prompt, clean_text, \
+GPTResponse2JSON, write_json, read_json, return_most_similar, get_number
 from LLMCaller import LLMCall
 from typing import Dict, List, Union
 import random
@@ -53,7 +54,6 @@ class FilmCrafter:
         # The maximum number of discussions between director and cinematographer
         self.stage3_verify_limit = 4
         
-
     def call(self, identity: str, params: Dict, trans2json: bool = True) -> Union[str, dict, list]:
         prompt = read_prompt(os.path.join(ROOT_PATH, f"Prompt/{identity}.txt"))
         prompt = prompt_format(prompt, params)
@@ -65,7 +65,6 @@ class FilmCrafter:
         log_prompt(self.log_path, result)
         return result
 
-    
     def casting(self):
         '''
             Role: Director
@@ -75,7 +74,6 @@ class FilmCrafter:
         params = {"{topic}": self.topic, "{character_limit}": self.character_limit}
         result = self.call("director_1", params)
         write_json(self.profile_path, result)
-        
         
     def scenes_plan(self):
         '''
@@ -99,7 +97,6 @@ class FilmCrafter:
         result = self.call("director_2", params)
         write_json(self.scene_path, result)
         
-        
     def lines_generate(self):
         '''
             Role: Screenwriter
@@ -111,7 +108,7 @@ class FilmCrafter:
         who = []
         where = []
         what = []
-        for id,scene in enumerate(scenes):
+        for id, scene in enumerate(scenes):
             selected_roles = scene[return_most_similar("selected-characters", list(scene.keys()))]
             selected_location = scene[return_most_similar("selected-location", list(scene.keys()))]
             story_plot = scene[return_most_similar("story-plot", list(scene.keys()))]
@@ -125,13 +122,13 @@ class FilmCrafter:
             location = selected_location
             goal = scene[return_most_similar("dialogue-goal", list(scene.keys()))]
 
-            script_outline = script_outline + f"{id + 1}. **Scene {id + 1}**:\n   - topic: {topic}\n   - involved characters: {characters}\n   - plot: {plot}\n   - location: {location}\n   - dialogue goal: {goal}\n\n"
+            script_outline += f"{id + 1}. **Scene {id + 1}**:\n   - topic: {topic}\n   - involved characters: {characters}\n   - plot: {plot}\n   - location: {location}\n   - dialogue goal: {goal}\n\n"
     
         params = {"{script_outline}": script_outline.strip()}
         result = self.call("screenwriter_1", params) 
         
         lines = []
-        assert len(result) == len(scenes)
+        assert len(result) == len(scenes), f"length of response and scenes must match. Response: {len(result)} != Scenes {len(scenes)}"
         for j in range(len(scenes)):
             line = {}
             line['scene_information'] = {}
@@ -141,9 +138,7 @@ class FilmCrafter:
             line['dialogues'] = result[j][return_most_similar("scene-dialogue", list(result[j].keys()))]
             lines.append(line)
         write_json(self.scene_path_1, lines)
-
-                
-                
+     
     def position_mark(self):
         '''
             Role: Screenwriter
@@ -153,7 +148,7 @@ class FilmCrafter:
         scenes = read_json(self.scene_path_1)
         script_information = ""
         optional_positions = ""
-        for id,scene in enumerate(scenes):
+        for id, scene in enumerate(scenes):
             i = id + 1
             who = scene['scene_information']['who']
             where = scene['scene_information']['where']
@@ -167,27 +162,25 @@ class FilmCrafter:
             # This "if judgment" is related to the position, and camera settings in Unity.
             if len(who) >= len(positions) - len(normal_position) + 2:
                 p = ""
-                for it,position in enumerate(positions):
+                for it, position in enumerate(positions):
                     j = it + 1
-                    p = p + f"   - Position {j}: " + position['description'] + '\n'
+                    p += f"   - Position {j}: " + position['description'] + '\n'
             else:
                 p = ""
-                for it,position in enumerate(normal_position):
+                for it, position in enumerate(normal_position):
                     j = it + 1
-                    p = p + f"   - Position {j}: " + position['description'] + '\n'                    
+                    p += f"   - Position {j}: " + position['description'] + '\n'                    
             optional_positions = optional_positions + f"{i}. **Positions in {where}**:\n{p}\n"
                 
         params = {"{script_information}": script_information.strip(), 
-                        "{optional_positions}": optional_positions.strip()}
+                  "{optional_positions}": optional_positions.strip()}
         result = self.call("screenwriter_2", params)
         
-        assert len(result) == len(scenes)
+        assert len(result) == len(scenes), f"length of response and scenes must match. Response: {len(result)} != Scenes {len(scenes)}"
         for j in range(len(scenes)):
             scenes[j]["initial position"] = result[j][return_most_similar("scene-position", list(result[j].keys()))]
         write_json(self.scene_path_2, scenes)
-                            
-                            
-                            
+                                             
     def action_mark(self):
         '''
             Role: Screenwriter
@@ -202,12 +195,12 @@ class FilmCrafter:
             positions = read_json(position_path)
             
             ini = ""
-            for id,item in enumerate(scene['initial position']):
+            for id, item in enumerate(scene['initial position']):
                 if [it['sittable'] for it in positions if get_number(it['id']) == get_number(item['position'])][0]:
                     sit = "sittable"
                 else:
                     sit = "unsittable"
-                ini = ini + f"   - {item['character']}: " + f"{sit} Position {str(get_number(item['position']))}, standing\n"
+                ini += f"   - {item['character']}: " + f"{sit} Position {str(get_number(item['position']))}, standing\n"
             ini = "   " + ini.strip() 
             params = {"{initial}": ini, 
                         "{plot}": scene['scene_information']['what'],
@@ -220,8 +213,6 @@ class FilmCrafter:
             data.append(scene)
             
         write_json(self.scene_path_3, data)
-    
-    
     
     def find_unknown_actions(self, scenes: List) -> List:
         '''
@@ -239,8 +230,6 @@ class FilmCrafter:
         
         return unknown_actions
     
-    
-    
     def stage1_verify(self):
         '''
             Role: Director and Screenwriter
@@ -251,7 +240,7 @@ class FilmCrafter:
         current_script = []
         unknown_actions = self.find_unknown_actions(scenes)
         characters_position = ""
-        for id,scene in enumerate(scenes):
+        for id, scene in enumerate(scenes):
             new_scene = {}
             new_scene['scene_information'] = scene['scene_information']
             new_scene['initial position'] = scene['initial position']
@@ -303,8 +292,6 @@ class FilmCrafter:
 
         write_json(self.scene_path_4, revised_script)
             
-            
-    
     def stage2_verify(self):
         '''
             Role: Actor, Director and Screenwriter
@@ -369,8 +356,6 @@ class FilmCrafter:
                     line['content'] = revised_script[id]['dialogues'][it]['content']
             
             write_json(self.scene_path_5, scenes)
-
-    
          
     def is_keep_standing(self, lines, character):
         '''
@@ -386,7 +371,6 @@ class FilmCrafter:
                 if action['character'] == character and action['state'] == 'sitting':
                     return False
         return True
-    
     
     def moveable_options(self, scene):
         '''
@@ -413,7 +397,6 @@ class FilmCrafter:
                 
         return moveable_characters, unoccupied_positions
         
-    
     def move_mark(self):
         '''
             Role: Director
@@ -465,7 +448,6 @@ class FilmCrafter:
             
         write_json(self.scene_path_6, data)
         
-        
     def shot_mark(self):
         '''
             Input: None
@@ -514,7 +496,6 @@ class FilmCrafter:
 
         return script, result1, result2, scenes
 
-
     def revise_shot_annotation(self, src, feedback):
         '''
             Input: Original shot annotation, revision suggestion
@@ -535,8 +516,6 @@ class FilmCrafter:
                 shot['shot'] = feedback[scene_id][shot_id][return_most_similar("updated shot", list(feedback[scene_id][shot_id].keys()))]
                 
         return new
-    
-    
     
     def stage3_verify(self):
         '''
@@ -582,10 +561,8 @@ class FilmCrafter:
             for key,value in last_shots[f'scene {i}'].items():
                 scenes[id]['dialogues'][get_number(key)-1]['selected shot'] = value[return_most_similar('shot', list(value.keys()))]
             
-            
         write_json(self.scene_path_7, scenes)
         
-    
     # Used for clean_script()
     def process_action(self, actions, v_characters, v_actions):
         new_actions = []
@@ -613,7 +590,6 @@ class FilmCrafter:
                 pass
         return new_actions
     
-    
     # Used for clean_script()  
     def process_shot(self, info, location, shot, v_shots):
         shot = return_most_similar(shot, v_shots)
@@ -625,7 +601,6 @@ class FilmCrafter:
             return "Long Shot " + str(random.randint(1, int(info[location]['long'])))
         else:
             return shot
-        
         
     def clean_script(self):
         '''
@@ -689,8 +664,7 @@ class FilmCrafter:
             data.append(new_scene)
             
         write_json(self.script_path, data)
-                    
-                    
+                       
                     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
