@@ -1,5 +1,5 @@
 from util import cretae_new_path, read_prompt, prompt_format, log_prompt, clean_text, \
-GPTResponse2JSON, write_json, read_json, return_most_similar, get_number
+GPTResponse2JSON, write_json, read_json, return_most_similar, get_number, read_jsonc
 from LLMCaller import LLMCall
 from typing import Dict, List, Union
 import random
@@ -7,13 +7,11 @@ import copy
 import argparse
 
 
-# TO DO
-ROOT_PATH = "/path/to/FilmAgent"
-# TO DO
-
 class FilmCrafter:
     
-    def __init__(self, topic: str) -> None:
+    def __init__(self, topic: str, character_limit: int, scene_limit: int,
+                 stage1_verify_limit: int, stage2_verify_limit: int,
+                 stage3_verify_limit: int) -> None:
         self.topic = topic
         self.log_path = create_new_path(os.path.join(ROOT_PATH, "Logs"), "txt")
         self.profile_path = os.path.join(ROOT_PATH, "Script/actors_profile.json") 
@@ -43,22 +41,17 @@ class FilmCrafter:
         # cinematographer's shot annotation
         self.cinematographer_shot_path = os.path.join(ROOT_PATH, "Script/cinematographer_shot.json")
 
-        # The maximum number of characters in a film
-        self.character_limit = 4
-        # The maximum number of scenes in a film
-        self.scene_limit = 3
-        # The maximum number of discussions between director and screenwriter
-        self.stage1_verify_limit = 3
-        # The maximum number of discussions between director, actor and screenwriter
-        self.stage2_verify_limit = 3
-        # The maximum number of discussions between director and cinematographer
-        self.stage3_verify_limit = 4
+        self.character_limit = character_limit
+        self.scene_limit = scene_limit
+        self.stage1_verify_limit = stage1_verify_limit
+        self.stage2_verify_limit = stage2_verify_limit
+        self.stage3_verify_limit = stage3_verify_limit
         
     def call(self, identity: str, params: Dict, trans2json: bool = True) -> Union[str, dict, list]:
         prompt = read_prompt(os.path.join(ROOT_PATH, f"Prompt/{identity}.txt"))
         prompt = prompt_format(prompt, params)
         log_prompt(self.log_path, prompt)
-        result = LLMCall(prompt, model)
+        result = LLMCall(prompt, PLATFORM, MODEL, SHOW_THOUGHT)
         if trans2json:
             result = clean_text(result)
             result = GPTResponse2JSON(result)
@@ -664,15 +657,35 @@ class FilmCrafter:
             data.append(new_scene)
             
         write_json(self.script_path, data)
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Run LocalFilmAgent to create the movie script")
+    parser.add_argument(
+        '--config_path',
+        type=str,
+        default="config.json",
+        help='Path to load a config file to run LocalFilmAgent.'
+    )
+    return parser.parse_args()
                        
                     
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--model', help="LLM to be called", type=str)
-    args = parser.parse_args()
-    model = args.model
+    args = parse_arguments()
+    cfg = read_jsonc(args.config_path)
+    topic = cfg["topic"]
+    ROOT_PATH = cfg["root_path"]
+    PLATFORM = cfg["platform"]
+    MODEL = cfg["model"]
+    SHOW_THOUGHT = cfg["show_thought"]
+    character_limit = cfg["character_limit"]
+    scene_limit = cfg["scene_limit"]
+    stage1_verify_limit = cfg["stage1_verify_limit"]
+    stage2_verify_limit = cfg["stage2_verify_limit"]
+    stage3_verify_limit = cfg["stage3_verify_limit"]
     
-    f = FilmCrafter(topic = "Reconcilation in a friend reunion")
+    f = FilmCrafter(topic, character_limit, scene_limit, stage1_verify_limit, 
+                    stage2_verify_limit, stage3_verify_limit)
     print("Characters selecting >>>")
     f.casting()
     print("Scenes planning >>>")
