@@ -6,10 +6,9 @@ client_gpt = OpenAI(api_key = "<OpenAI API Key>")
 client_deepseek = OpenAI(api_key = "<DeepSeek API Key>", base_url="https://api.deepseek.com")
 
 
-
 def LLMCall(prompt, model):
     counter = 0
-    result = "api调用失败"
+    result = "API call failed"
     if "gpt" in model:
         client = client_gpt
     if "deepseek" in model:
@@ -32,9 +31,6 @@ def LLMCall(prompt, model):
             counter += 1
             
     return result
-
-
-
 
 def GPTTTS(text, role):
     client = client_gpt

@@ -1,5 +1,5 @@
-from util import *
-from LLMCaller import *
+from util import cretae_new_path, read_prompt, prompt_format, log_prompt, clean_text, GPTResponse2JSON
+from LLMCaller import LLMCall
 from typing import Dict, List, Union
 import random
 import copy
@@ -14,33 +14,33 @@ class FilmCrafter:
     
     def __init__(self, topic: str) -> None:
         self.topic = topic
-        self.log_path = cretae_new_path(os.path.join(ROOT_PATH, "Logs"), "txt")
-        self.profile_path = os.path.join(ROOT_PATH, "Script\\actors_profile.json") 
-        self.action_description_path = os.path.join(ROOT_PATH, "Locations\\actions.txt")
-        self.shot_description_path = os.path.join(ROOT_PATH, "Locations\\shots.txt")
+        self.log_path = create_new_path(os.path.join(ROOT_PATH, "Logs"), "txt")
+        self.profile_path = os.path.join(ROOT_PATH, "Script/actors_profile.json") 
+        self.action_description_path = os.path.join(ROOT_PATH, "Locations/actions.txt")
+        self.shot_description_path = os.path.join(ROOT_PATH, "Locations/shots.txt")
         # scenes
-        self.scene_path = os.path.join(ROOT_PATH, "Script\scenes_1.json") 
+        self.scene_path = os.path.join(ROOT_PATH, "Script/scenes_1.json") 
         # + lines
-        self.scene_path_1 = os.path.join(ROOT_PATH, "Script\scenes_2.json") 
+        self.scene_path_1 = os.path.join(ROOT_PATH, "Script/scenes_2.json") 
         # + positions
-        self.scene_path_2 = os.path.join(ROOT_PATH, "Script\scenes_3.json") 
+        self.scene_path_2 = os.path.join(ROOT_PATH, "Script/scenes_3.json") 
         # + actions
-        self.scene_path_3 = os.path.join(ROOT_PATH, "Script\scenes_4.json")
+        self.scene_path_3 = os.path.join(ROOT_PATH, "Script/scenes_4.json")
         # stage1_verify
-        self.scene_path_4 = os.path.join(ROOT_PATH, "Script\scenes_5.json")
+        self.scene_path_4 = os.path.join(ROOT_PATH, "Script/scenes_5.json")
         # stage2_verify
-        self.scene_path_5 = os.path.join(ROOT_PATH, "Script\scenes_6.json") 
+        self.scene_path_5 = os.path.join(ROOT_PATH, "Script/scenes_6.json") 
         # + movement
-        self.scene_path_6 = os.path.join(ROOT_PATH, "Script\scenes_7.json") 
+        self.scene_path_6 = os.path.join(ROOT_PATH, "Script/scenes_7.json") 
         # + shot (stage3_verify)
-        self.scene_path_7 = os.path.join(ROOT_PATH, "Script\scenes_8.json") 
+        self.scene_path_7 = os.path.join(ROOT_PATH, "Script/scenes_8.json") 
         # The final script
-        self.script_path = cretae_new_path(os.path.join(ROOT_PATH, "Script\script"), "json")
+        self.script_path = cretae_new_path(os.path.join(ROOT_PATH, "Script/script"), "json")
         
         # director's shot annotation
-        self.director_shot_path = os.path.join(ROOT_PATH, "Script\director_shot.json")
+        self.director_shot_path = os.path.join(ROOT_PATH, "Script/director_shot.json")
         # cinematographer's shot annotation
-        self.cinematographer_shot_path = os.path.join(ROOT_PATH, "Script\cinematographer_shot.json")
+        self.cinematographer_shot_path = os.path.join(ROOT_PATH, "Script/cinematographer_shot.json")
 
         # The maximum number of characters in a film
         self.character_limit = 4
@@ -55,7 +55,7 @@ class FilmCrafter:
         
 
     def call(self, identity: str, params: Dict, trans2json: bool = True) -> Union[str, dict, list]:
-        prompt = read_prompt(os.path.join(ROOT_PATH, f"Prompt\{identity}.txt") )
+        prompt = read_prompt(os.path.join(ROOT_PATH, f"Prompt/{identity}.txt"))
         prompt = prompt_format(prompt, params)
         log_prompt(self.log_path, prompt)
         result = LLMCall(prompt, model)
@@ -161,7 +161,7 @@ class FilmCrafter:
 
             script_information = script_information + f"{i}. **Scene {i}**:\n   - characters: {who}\n   - location: {where}\n   - plot: {what}\n\n"
             
-            position_path = os.path.join(ROOT_PATH, f"Locations\{where}\position.json")
+            position_path = os.path.join(ROOT_PATH, f"Locations/{where}/position.json")
             positions = read_json(position_path)
             normal_position = [item for item in positions if item['fixed_angle'] == False]
             # This "if judgment" is related to the position, and camera settings in Unity.
@@ -198,7 +198,7 @@ class FilmCrafter:
         all_actions = read_prompt(self.action_description_path)
         data = []
         for scene in scenes:
-            position_path = os.path.join(ROOT_PATH, f"Locations\{scene['scene_information']['where']}\position.json")
+            position_path = os.path.join(ROOT_PATH, f"Locations/{scene['scene_information']['where']}/position.json")
             positions = read_json(position_path)
             
             ini = ""
@@ -230,7 +230,7 @@ class FilmCrafter:
             Output: The list of actions appearing in the script that are not set in Unity.
         '''
         unknown_actions = []
-        all_actions = read_json(os.path.join(ROOT_PATH, "Locations\\actions.json"))
+        all_actions = read_json(os.path.join(ROOT_PATH, "Locations/actions.json"))
         for scene in scenes:
             for line in scene['dialogues']:
                 for action in line['actions']:
@@ -263,7 +263,7 @@ class FilmCrafter:
                 new_scene['dialogues'].append(new_line)
             current_script.append(new_scene)
             
-            position_path = os.path.join(ROOT_PATH, f"Locations\{scene['scene_information']['where']}\position.json")
+            position_path = os.path.join(ROOT_PATH, f"Locations/{scene['scene_information']['where']}/position.json")
             positions = read_json(position_path)
             p = []
             for position in scene['initial position']:
@@ -396,7 +396,7 @@ class FilmCrafter:
                 1. All movable characters (i.e., the characters that remain standing throughout the script)
                 2. All positions that character can move to (i.e., the unoccupied positions)
         '''
-        position_path = os.path.join(ROOT_PATH, f"Locations\{scene[return_most_similar('scene_information', list(scene.keys()))]['where']}\position.json")
+        position_path = os.path.join(ROOT_PATH, f"Locations/{scene[return_most_similar('scene_information', list(scene.keys()))]['where']}/position.json")
         positions = read_json(position_path)
         occupied_positions = [get_number(item['position']) for item in scene[return_most_similar('initial position', list(scene.keys()))]]
         unoccupied_positions = [f"{item['id']}: {item['description']}" for item in positions if get_number(item['id']) not in occupied_positions]
@@ -634,11 +634,11 @@ class FilmCrafter:
         scenes = read_json(self.scene_path_7)
         profiles = read_json(self.profile_path)
         v_characters = [item['name'] for item in profiles]
-        info = read_json(os.path.join(ROOT_PATH, "Locations\\rotateandtrack.json"))
+        info = read_json(os.path.join(ROOT_PATH, "Locations/rotateandtrack.json"))
         v_locations = [location for location in info.keys()]
-        info_1 = read_json(os.path.join(ROOT_PATH, "Locations\\actions.json"))
+        info_1 = read_json(os.path.join(ROOT_PATH, "Locations/actions.json"))
         v_actions = [action for action in info_1.keys()]
-        info_2 = read_json(os.path.join(ROOT_PATH, "Locations\\shots.json"))
+        info_2 = read_json(os.path.join(ROOT_PATH, "Locations/shots.json"))
         v_shots = [shot for shot in info_2.keys()]
         
         data = []
