@@ -1,6 +1,6 @@
 from util import cretae_new_path, read_prompt, prompt_format, log_prompt, clean_text, \
 GPTResponse2JSON, write_json, read_json, return_most_similar, get_number, read_jsonc
-from LLMCaller import LLMCall
+from LLMCaller import LLMCall, init_hf_pipe
 from typing import Dict, List, Union
 import random
 import copy
@@ -51,7 +51,7 @@ class FilmCrafter:
         prompt = read_prompt(os.path.join(ROOT_PATH, f"Prompt/{identity}.txt"))
         prompt = prompt_format(prompt, params)
         log_prompt(self.log_path, prompt)
-        result = LLMCall(prompt, PLATFORM, MODEL, SHOW_THOUGHT)
+        result = LLMCall(prompt, PLATFORM, MODEL_OR_PIPE, SHOW_THOUGHT)
         if trans2json:
             result = clean_text(result)
             result = GPTResponse2JSON(result)
@@ -676,7 +676,8 @@ if __name__ == '__main__':
     topic = cfg["topic"]
     ROOT_PATH = cfg["root_path"]
     PLATFORM = cfg["platform"]
-    MODEL = cfg["model"]
+    MODEL_OR_PIPE = cfg["model"]
+    if PLATFORM == "huggingface": MODEL_OR_PIPE = init_hf_pipe(MODEL_OR_PIPE)
     SHOW_THOUGHT = cfg["show_thought"]
     character_limit = cfg["character_limit"]
     scene_limit = cfg["scene_limit"]
