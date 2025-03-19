@@ -70,9 +70,7 @@ pip install -r env.txt
 ```bash
 cd /path/to/FilmAgent
 conda activate filmagent
-python main.py --model "gpt-4o" # openai
-# python main.py --model "deepseek-chat" ## deepseek-v3
-# python main.py --model "deepseek-reasoner" ## deepseek-r1 Using this model for a multi-agent process will be very slow, you could try using a single-agent process instead. (Refer to step 6)
+python main.py --config_path config.json
 ```
 
 3. We use [ChatTTS](https://github.com/2noise/ChatTTS) to provide voice acting for the characters in the script. You need to download the [ChatTTS](https://github.com/2noise/ChatTTS) repository to the `TTS` directory. Then replace the absolute pathname '/path/to/' with your specific path in the `tts_main.py`. Run the following commands to deploy the text-to-speech service:

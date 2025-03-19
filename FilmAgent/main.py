@@ -1,10 +1,11 @@
-from util import cretae_new_path, read_prompt, prompt_format, log_prompt, clean_text, \
+from util import create_new_path, read_prompt, prompt_format, log_prompt, clean_text, \
 GPTResponse2JSON, write_json, read_json, return_most_similar, get_number, read_jsonc
 from LLMCaller import LLMCall, init_hf_pipe
 from typing import Dict, List, Union
 import random
 import copy
 import argparse
+import os
 
 
 class FilmCrafter:
@@ -34,7 +35,7 @@ class FilmCrafter:
         # + shot (stage3_verify)
         self.scene_path_7 = os.path.join(ROOT_PATH, "Script/scenes_8.json") 
         # The final script
-        self.script_path = cretae_new_path(os.path.join(ROOT_PATH, "Script/script"), "json")
+        self.script_path = create_new_path(os.path.join(ROOT_PATH, "Script/script"), "json")
         
         # director's shot annotation
         self.director_shot_path = os.path.join(ROOT_PATH, "Script/director_shot.json")

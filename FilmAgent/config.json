@@ -1,6 +1,6 @@
 {
     // Specify your topic to create a film
-    "TOPIC": "Reconcilation in a friend reunion",
+    "topic": "Reconcilation in a friend reunion",
     // Specify your root path where main.py is located
      "root_path": ".",
     // Choose a LLM platform. "ollama" and "huggingface" are available
