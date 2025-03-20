@@ -268,7 +268,9 @@ class FilmCrafter:
                         "{script}": current_script,
                         "{all_actions}": all_actions,
                         "{characters_position}": characters_position}
+            print("params:", params)          
             revised_script = self.call("screenwriter_4", params)
+            print("revised_script:", revised_script)
             current_script = revised_script
             unknown_actions = self.find_unknown_actions(revised_script)
             # If there are still unknown actions, discuss again immediately.
@@ -675,7 +677,7 @@ def verify_resume_from_func_name(resume_from):
     "stage1_verify, stage2_verify, move_mark, stage3_verify, clean_script"
     available_actions = set(available_actions_str.split(', '))
     assert resume_from in available_actions, f"Specify resume_from arg from available actions. Available functions are " + \
-    "{available_actions_str}. What you specified is {resume_from}."
+    f"{available_actions_str}. What you specified is {resume_from}."
 
 def create_progress_dict(resume_from):
     progress_dict = {'casting': False, 
@@ -690,7 +692,7 @@ def create_progress_dict(resume_from):
                      'clean_script': False}
     
     for k in progress_dict.keys():
-        if progress_dict[k] == resume_from: break
+        if k == resume_from: break
         else: progress_dict[k] = True
     return progress_dict
                     
