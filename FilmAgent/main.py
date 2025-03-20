@@ -669,13 +669,39 @@ def parse_arguments():
         help='Path to load a config file to run LocalFilmAgent.'
     )
     return parser.parse_args()
-                       
+
+def verify_resume_from_func_name(resume_from):
+    available_actions_str = "casting, scenes_plan, lines_generate, position_mark, action_mark, " + \
+    "stage1_verify, stage2_verify, move_mark, stage3_verify, clean_script"
+    available_actions = set(available_actions_str.split(', '))
+    if resume_from.strip() == "": resume_from = "casting"
+    assert resume_from in available_actions, f"Specify resume_from arg from available actions. Available functions are " + \
+    "{available_actions_str}. What you specified is {resume_from}."
+    return resume_from
+
+def create_progress_dict(resume_from):
+    progress_dict = {'casting': False, 
+                     'scenes_plan': False, 
+                     'lines_generate': False,
+                     'position_mark': False, 
+                     'action_mark': False, 
+                     'stage1_verify': False, 
+                     'stage2_verify': False, 
+                     'move_mark': False, 
+                     'stage3_verify': False, 
+                     'clean_script': False}
+    
+    for k in progress_dict.keys():
+        if progress_dict[k] == resume_from: break
+        else: progress_dict[k] = True
+    return progress_dict
                     
 if __name__ == '__main__':
     args = parse_arguments()
     cfg = read_jsonc(args.config_path)
     topic = cfg["topic"]
     ROOT_PATH = cfg["root_path"]
+    resume_from = cfg["resume_from"]
     PLATFORM = cfg["platform"]
     MODEL_OR_PIPE = cfg["model"]
     if PLATFORM == "huggingface": MODEL_OR_PIPE = init_hf_pipe(MODEL_OR_PIPE)
@@ -685,26 +711,40 @@ if __name__ == '__main__':
     stage1_verify_limit = cfg["stage1_verify_limit"]
     stage2_verify_limit = cfg["stage2_verify_limit"]
     stage3_verify_limit = cfg["stage3_verify_limit"]
-    
+
+    resume_from = verify_resume_from_func_name(resume_from)
+    progress_dict = create_progress_dict(resume_from)
+
     f = FilmCrafter(topic, character_limit, scene_limit, stage1_verify_limit, 
                     stage2_verify_limit, stage3_verify_limit)
-    print("Characters selecting >>>")
-    f.casting()
-    print("Scenes planning >>>")
-    f.scenes_plan()
-    print("Lines generating >>>")
-    f.lines_generate()
-    print("Positions marking >>>")
-    f.position_mark()
-    print("Actions marking >>>")
-    f.action_mark()
-    print("Director discusses with screenwriter about the script >>>")
-    f.stage1_verify()
-    print("Actors give comments on the lines >>>")
-    f.stage2_verify()
-    print("Movement marking >>>")
-    f.move_mark()
-    print("Director discusses with cinematographer about the shots >>>")
-    f.stage3_verify()
-    print("Script cleaning >>>")
-    f.clean_script()
+
+    if not progress_dict["casting"]:
+        print("Characters selecting >>>")
+        f.casting()
+    if not progress_dict["scenes_plan"]:
+        print("Scenes planning >>>")
+        f.scenes_plan()
+    if not progress_dict["lines_generate"]:
+        print("Lines generating >>>")
+        f.lines_generate()
+    if not progress_dict["position_mark"]:
+        print("Positions marking >>>")
+        f.position_mark()
+    if not progress_dict["action_mark"]:
+        print("Actions marking >>>")
+        f.action_mark()
+    if not progress_dict["stage1_verify"]:
+        print("Director discusses with screenwriter about the script >>>")
+        f.stage1_verify()
+    if not progress_dict["stage2_verify"]:
+        print("Actors give comments on the lines >>>")
+        f.stage2_verify()
+    if not progress_dict["move_mark"]:
+        print("Movement marking >>>")
+        f.move_mark()
+    if not progress_dict["stage3_verify"]:
+        print("Director discusses with cinematographer about the shots >>>")
+        f.stage3_verify()
+    if not progress_dict["clean_script"]:
+        print("Script cleaning >>>")
+        f.clean_script()
