@@ -671,13 +671,11 @@ def parse_arguments():
     return parser.parse_args()
 
 def verify_resume_from_func_name(resume_from):
-    available_actions_str = "casting, scenes_plan, lines_generate, position_mark, action_mark, " + \
+    available_actions_str = "scenes_plan, lines_generate, position_mark, action_mark, " + \
     "stage1_verify, stage2_verify, move_mark, stage3_verify, clean_script"
     available_actions = set(available_actions_str.split(', '))
-    if resume_from.strip() == "": resume_from = "casting"
     assert resume_from in available_actions, f"Specify resume_from arg from available actions. Available functions are " + \
     "{available_actions_str}. What you specified is {resume_from}."
-    return resume_from
 
 def create_progress_dict(resume_from):
     progress_dict = {'casting': False, 
@@ -712,7 +710,12 @@ if __name__ == '__main__':
     stage2_verify_limit = cfg["stage2_verify_limit"]
     stage3_verify_limit = cfg["stage3_verify_limit"]
 
-    resume_from = verify_resume_from_func_name(resume_from)
+    if resume_from.strip() == "" or resume_from.strip() == "casting":
+        print("Start from casting.")
+        resume_from = "casting"
+    else:
+        verify_resume_from_func_name(resume_from)
+        print(f"Resume from {resume_from}.")
     progress_dict = create_progress_dict(resume_from)
 
     f = FilmCrafter(topic, character_limit, scene_limit, stage1_verify_limit, 

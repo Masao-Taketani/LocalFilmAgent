@@ -5,7 +5,7 @@
      "root_path": ".",
     /* Specify a function name if you want to resume from one of the FilmCrafter functions.If the value is an empty string,
     The program starts from scratch.
-    Available functions are casting, scenes_plan, lines_generate, position_mark, action_mark, stage1_verify, stage2_verify,
+    Available functions are scenes_plan, lines_generate, position_mark, action_mark, stage1_verify, stage2_verify,
     move_mark, stage3_verify, clean_script.*/
     "resume_from": "",
     // Choose a LLM platform. "ollama" and "huggingface" are available
