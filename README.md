@@ -1,6 +1,12 @@
 <p align="center">
-    <video src="media/videos/Reconcilation-in-a-friend-reunion.mp4" width="500"></video>
+    <video src="[media/videos/Reconcilation-in-a-friend-reunion.mp4](https://github.com/user-attachments/assets/2100f31e-65a9-480b-82bd-602b5eddda39
+)" width="500"></video>
 <p>
+
+
+
+<div><video controls src="https://github.com/user-attachments/assets/2100f31e-65a9-480b-82bd-602b5eddda39" muted="false"></video></div>
+
 
 <h2 align="center"> <a href="https://github.com/Masao-Taketani/LocalFilmAgent">LocalFilmAgent</a></h2>
 <!-- <h5 align="center"> If you like our project, please consider giving us a star ⭐ on GitHub to stay updated with the latest developments.  </h2> -->
