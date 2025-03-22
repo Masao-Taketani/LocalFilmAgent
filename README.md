@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="media/videos/Reconcilation-in-a-friend-reunion.mp4" width="500"/>
+    <video src="media/videos/Reconcilation-in-a-friend-reunion.mp4" width="500"></video>
 <p>
 
 <h2 align="center"> <a href="https://github.com/Masao-Taketani/LocalFilmAgent">LocalFilmAgent</a></h2>
