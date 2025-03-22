@@ -1,17 +1,16 @@
 <p align="center">
-    <img src="pics/cover_page.jpg" width="300" style="margin-bottom: 0.2;"/>
+    <img src="media/videos/Reconcilation-in-a-friend-reunion.mp4" width="500"/>
 <p>
 
-<h2 align="center"> <a href="https://github.com/HITsz-TMG/FilmAgent">FilmAgent: A Multi-Agent Framework for End-to-End Film Automation in Virtual 3D Spaces</a></h2>
+<h2 align="center"> <a href="https://github.com/Masao-Taketani/LocalFilmAgent">LocalFilmAgent</a></h2>
 <!-- <h5 align="center"> If you like our project, please consider giving us a star ⭐ on GitHub to stay updated with the latest developments.  </h2> -->
 <h4 align="center">
 
 <div align="center">
-<img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version"> 
 <img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License">
-<img src="https://img.shields.io/github/stars/HITsz-TMG/FilmAgent?color=yellow" alt="Stars">
-<img src="https://img.shields.io/github/issues/HITsz-TMG/FilmAgent?color=red" alt="Issues">
-<img src="https://img.shields.io/badge/python-3.8-purple.svg" alt="Python">
+<img src="https://img.shields.io/github/stars/Masao-Taketani/LocalFilmAgent?color=yellow" alt="Stars">
+<img src="https://img.shields.io/github/issues/Masao-Taketani/LocalFilmAgent?color=red" alt="Issues">
+<img src="https://img.shields.io/badge/python-3.9-purple.svg" alt="Python">
 
 <!-- <img src="https://img.shields.io/github/stars/AIDC-AI/Marco-o1?color=yellow" alt="Stars"> -->
 
