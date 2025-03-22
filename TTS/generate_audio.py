@@ -5,6 +5,10 @@ from typing import Optional
 from tqdm import tqdm
 import os
 import soundfile
+import torch
+torch._dynamo.config.cache_size_limit = 64
+torch._dynamo.config.suppress_errors = True
+torch.set_float32_matmul_precision('high')
 
 from utils import read_json, toString, contains_digit, prompt_format, InferCodeParams
 import ChatTTS
@@ -17,7 +21,6 @@ OUTDIR_PATH = "../FilmAgent/Audio"
 os.makedirs(OUTDIR_PATH, exist_ok=True)
 ACTOS_PATH = "../FilmAgent/Script/actors_profile.json"
 SCRIPT_PATH = "../FilmAgent/Script/script/0.json"
-AUDIO_PATH = "../FilmAgent/audio_files"
 PARAMS_INFER_CODE = {'prompt':'[speed_3]', 'temperature':0.3,'top_P':0.9, 'top_K':1}
 
 
@@ -51,7 +54,7 @@ def create_name2chatspeaker_dict(actos_path):
             chat_speaker_female.pop(0)
     return name2chatspeaker
 
-def create_scripts():
+def create_scripts(Script_path):
     invalid_characters_map = {
         "!": ".",
         "?": ".",
@@ -68,16 +71,16 @@ def create_scripts():
         '-': ','
     }
 
-    script = read_json(SCRIPT_PATH)
+    script = read_json(Script_path)
     lines = []
     for scene in script:
         for event in scene['scene']:
             if "content" in event.keys():
                 l = event["content"]
                 lines.append({"speaker": event["speaker"], "content": prompt_format(l, invalid_characters_map)+"[uv_break]"})
-    return line
+    return lines
 
-def create_audio_files(chat, lines, name2chatspeaker, spk):
+def create_audio_files(chat, lines, name2chatspeaker, spk, outdir_path):
     for i, line in enumerate(tqdm(lines)):
         params = {"gender": name2chatspeaker[line['speaker']]['gender'], 
                   "text": line['content'], 
@@ -94,9 +97,13 @@ def create_audio_files(chat, lines, name2chatspeaker, spk):
                         #   do_text_normalization=True,
                         skip_refine_text=True,
                         params_infer_code=params_infer_code)
-        soundfile.write(os.path.join(OUTDIR_PATH, f"{i}.wav"), wavs[0], 24000)
+        soundfile.write(os.path.join(outdir_path, f"{i}.wav"), wavs[0], 24000)
 
 
 if __name__ == "__main__":
     chat = ChatTTS.Chat()
     chat.load(source='local', custom_path=MODEL_PATH, compile=False)
+    spk = create_spk(MALE_PATH, FEMALE_PATH)
+    name2chatspeaker = create_name2chatspeaker_dict(ACTOS_PATH)
+    lines = create_scripts(SCRIPT_PATH)
+    create_audio_files(chat, lines, name2chatspeaker, spk, OUTDIR_PATH)
