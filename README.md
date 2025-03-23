@@ -1,11 +1,8 @@
-<p align="center">
-    <video src="[media/videos/Reconcilation-in-a-friend-reunion.mp4](https://github.com/user-attachments/assets/2100f31e-65a9-480b-82bd-602b5eddda39
-)" width="500"></video>
-<p>
 
 
 
-<div><video controls src="https://github.com/user-attachments/assets/2100f31e-65a9-480b-82bd-602b5eddda39" muted="false"></video></div>
+https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
+
 
 
 <h2 align="center"> <a href="https://github.com/Masao-Taketani/LocalFilmAgent">LocalFilmAgent</a></h2>
