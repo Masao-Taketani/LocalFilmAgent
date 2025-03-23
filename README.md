@@ -1,9 +1,10 @@
+# LocalFilmAgent: A Multi-Agent Framework for End-to-End Film Automation in Virtual 3D Spaces
 
-
+<p align="center">
+  <img src="pics/LocalFilmAgent.jpg" alt="Main picture of LocalFilmAgent" style="width: 60%;">
+</p>
 
 https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
-
-
 
 <h2 align="center"> <a href="https://github.com/Masao-Taketani/LocalFilmAgent">LocalFilmAgent</a></h2>
 <!-- <h5 align="center"> If you like our project, please consider giving us a star ⭐ on GitHub to stay updated with the latest developments.  </h2> -->
