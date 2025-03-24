@@ -4,10 +4,34 @@
   <img src="pics/LocalFilmAgent.jpg" alt="Main picture of LocalFilmAgent" style="width: 60%;">
 </p>
 
+## Introduction
+This repository is based on [FilmAgent](https://github.com/HITsz-TMG/FilmAgent), but this repository supports local LLMs, 
+which the original repo does not. It is especially good if you or your organization has enough GPUs for you to use. Some of possible 
+advantages are as follows.
+
+- Don't need to send your data to cloud LLMs.
+- Once you download a model, you don't need to access the internet to utilize LLMs (you may need to use the internet to utilize other resources such as web search).
+- Can flexibly and locally finetune a LLM model if you want to.
+- Don't need to spend money on pay-as-you-go APIs, which are ambiguous and hard to estimate the total costs that you need to pay.
+Besides, even if you decide to utilize one of the cloud LLMs later on, using local LLMs first can give you an approximation of the costs 
+before using the cloud ones, such as how many tokens a LLM would produce in order to solve your problem. 
+- It is also good if you would like to investigate and experiment what kind of outcomes you can expect when you feed your data for internal 
+investigation purposes.
+
+
+## Modification
+I have made some modifications in this repo from the original one.
+- Enable you to use local LLMs instead of cloud ones. Local LLMs include recently announced reasoning models such as  [**DeepSeek R1**](https://github.com/deepseek-ai/DeepSeek-R1) and [**QwQ**](https://qwenlm.github.io/blog/qwq-32b/).
+- Made arguments and some crucial parameters configurable using a JSON config file. For details, please check [config.json](FilmAgent/config.json)
+- Made clear the import dependencies because the original code frequently uses `import *`, which is ambiguous and not recommended
+- Created a python program to run [ChatTTS](https://github.com/2noise/ChatTTS) without any error since the code the original repo provided generates some errors due to, presumably, the fact that there might have been updates since it was created 
+- Updated [env.txt](FilmAgent/env.txt) to accomodate local LLMs. For details, please check [Environmental Setup](#environmental-setup)
+- Include some examples that were created using Local LLMs. Please refer to [examples](examples/) directory for details
+
+
 https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
 
-<h2 align="center"> <a href="https://github.com/Masao-Taketani/LocalFilmAgent">LocalFilmAgent</a></h2>
-<!-- <h5 align="center"> If you like our project, please consider giving us a star ⭐ on GitHub to stay updated with the latest developments.  </h2> -->
+
 <h4 align="center">
 
 <div align="center">
@@ -25,33 +49,12 @@ https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
 
 </h4>
 
-<div align="center">
-
-<!-- **Affiliations:** -->
-
-_**Zhenran Xu, Longyue Wang, Jifang Wang, Zhouyi Li, Senbao Shi, Xue Yang, Yiyu Wang, Baotian Hu, Jun Yu, Min Zhang**_
-
-🎯  [**Project Page**](https://filmagent.github.io)  :octocat:  [**Code**](https://github.com/HITsz-TMG/FilmAgent)  📝  [**Paper**](https://arxiv.org/abs/2501.12909) 🧑‍💻  [**Slides**](https://filmagent.github.io/static/SA24_FilmAgent.pdf)  📽️  [**Video**](https://www.youtube.com/watch?v=hTI-0777iHU)
-
-<a href="https://trendshift.io/repositories/12871" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12871" alt="HITsz-TMG%2FFilmAgent | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-</div>
-
 #
 
-**FilmAgent** is a multi-agent collaborative system for end-to-end film automation in 3D virtual spaces. 
-FilmAgent simulates key crew roles—directors, screenwriters, actors, and cinematographers, and integrates efficient human workflows within a sandbox environment.
+**LocalFilmAgent** is a multi-agent collaborative system for end-to-end film automation in 3D virtual spaces. 
+LocalFilmAgent simulates key crew roles—directors, screenwriters, actors, and cinematographers, and integrates efficient human workflows within a sandbox environment.
 
 <div align=center><img src="https://github.com/HITsz-TMG/FilmAgent/blob/main/pics/intro.png" height="100%" width="78%"/></div>
-
-## 💥 News
-
-- `2025/2/24`: 🚀 We have integrated **DeepSeek**-v3 and r1 for model selection, allowing for more sophisticated decision-making processes.
-- `2025/2/11`: 🎬 We’ve just released a fan-made video about ***NeZha2***, in celebration of its record-breaking success at the box office. Click the image below to watch the video! 👇
-  [<div align=center><img src="https://github.com/HITsz-TMG/FilmAgent/blob/main/pics/nezha_youtube.png" width="450"></div>](https://www.youtube.com/watch?v=jY3n-AzBtUQ)
-- `2025/1/23`:  🙌 We're excited that FilmAgent is recommended by [AK](https://x.com/_akhaliq/status/1882268452716728789), [el.cine](https://x.com/EHuanglu/status/1882294685919772928) and [Theoretically Media](https://www.youtube.com/watch?v=0ebXKegfxWk&t=899s). Thanks!
-- `2025/1/22`: 📄 Our paper is now accessible at https://arxiv.org/abs/2501.12909.
-
 
 
 ## 🚀 Framework
@@ -60,12 +63,13 @@ Following the traditional film studio workflow, we divide the whole film automat
 
 <div align=center><img src="https://github.com/HITsz-TMG/FilmAgent/blob/main/pics/framework.png" height="100%" width="85%"/></div>
 
-## 🌟 Build Your own Film with FilmAgent
+
+## 🌟 Build Your own Film with LocalFilmAgent
 
 1. Install Package
 ```Shell
-conda create -n filmagent python==3.9.18
-conda activate filmagent
+conda create -n localfilmagent python==3.9.18
+conda activate localfilmagent
 pip install -r env.txt
 ```
 
@@ -125,17 +129,7 @@ We are currently working towards **merging the power of text-to-video models wit
 
 Here is a preview of our work—a fan-made tribute to the box office phenomenon *NeZha2* [▶️[video link](https://www.youtube.com/watch?v=jY3n-AzBtUQ)]. This video celebrates *NeZha2* surpassing a CNY 8 billion at the box office, officially crowning it as the highest-grossing film in a single territory! 🎉 
 
-## 📚 Citation
+## Reference
 
-If you find FilmAgent useful for your research and applications, please cite using this BibTeX:
-```bibtex
-@misc{xu2025filmagent,
-      title={FilmAgent: A Multi-Agent Framework for End-to-End Film Automation in Virtual 3D Spaces}, 
-      author={Zhenran Xu and Longyue Wang and Jifang Wang and Zhouyi Li and Senbao Shi and Xue Yang and Yiyu Wang and Baotian Hu and Jun Yu and Min Zhang},
-      year={2025},
-      eprint={2501.12909},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2501.12909}, 
-}
-```
+[HITsz-TMG/FilmAgent](https://github.com/HITsz-TMG/FilmAgent)
+[ChatTTS](https://github.com/2noise/ChatTTS)
