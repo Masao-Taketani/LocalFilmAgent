@@ -48,7 +48,7 @@ I have made some modifications in this repo from the original one.
 - Include some examples that were created using Local LLMs. Please refer to [examples](examples/) directory for details
 
 
-The following video is an example created by LocalFilmAgent specifying `Reconcilation in a friend reunion` as a topic.
+The following video is an example created by LocalFilmAgent specifying `Reconcilation in a friend reunion` as a topic without cherry picking!
 
 https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
 
@@ -116,7 +116,7 @@ The following table records some comparisons of the scripts and camera settings 
 
 While Sora (🔗 [Video](https://github.com/user-attachments/assets/65bb4c12-cba0-4ee9-a673-63ea5103fd76)) shows great adaptability to diverse locations, characters and shots, it **struggles with consistency and narrative delivery**, along with **strange artifacts**. 
 
-In contrast, FilmAgent requires pre-built 3D spaces, but it produces **coherent, physics-compliant** videos with strong **storytelling capabilities**.
+In contrast, FilmAgent requires pre-built 3D spaces, but it produces **coherent, physics-compliant** videos with strong **storytelling capabilities** (▶️ Watch [the example video](https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6)).
 
 
 ## Reference
