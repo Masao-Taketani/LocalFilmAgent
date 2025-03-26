@@ -43,12 +43,12 @@ I have made some modifications in this repo from the original one.
 - Enable you to use local LLMs instead of cloud ones. Local LLMs include recently announced reasoning models such as  [**DeepSeek R1**](https://github.com/deepseek-ai/DeepSeek-R1) and [**QwQ**](https://qwenlm.github.io/blog/qwq-32b/).
 - Made arguments and some crucial parameters configurable using a JSON config file. For details, please check [config.json](FilmAgent/config.json)
 - Made clear the import dependencies because the original code frequently uses `import *`, which is ambiguous and not recommended
-- Created a python program to run [ChatTTS](https://github.com/2noise/ChatTTS) without any error since the code the original repo provided generates some errors due to, presumably, the fact that there might have been updates since it was created 
-- Updated [env.txt](FilmAgent/env.txt) to accomodate local LLMs. For details, please check [Environmental Setup](#environmental-setup)
+- Created a python program to run [ChatTTS](https://github.com/2noise/ChatTTS) without any error since the code the original repo provided generates some errors due to, presumably, the fact that there might have been updates since it was created. Also, enable you to run the program without running a web server, which the original repo does
+- Updated [env.txt](FilmAgent/env.txt) to accomodate local LLMs
 - Include some examples that were created using Local LLMs. Please refer to [examples](examples/) directory for details
 
 
-The following video is created with LocalFilmAgent specifying `Reconcilation in a friend reunion` as the topic.
+The following video is an example created by LocalFilmAgent specifying `Reconcilation in a friend reunion` as a topic.
 https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
 
 
