@@ -23,7 +23,7 @@
   <img src="pics/LocalFilmAgent.jpg" alt="Main picture of LocalFilmAgent" style="width: 60%;">
 </p>
 
-The following video is an example created by LocalFilmAgent specifying `Reconcilation in a friend reunion` as a topic without cherry picking!
+The following video is an example created by LocalFilmAgent specifying `reconciliation in a friend reunion` as a topic without cherry picking!
 
 https://github.com/user-attachments/assets/eed71332-0ae5-475b-8212-d10958f240e6
 
